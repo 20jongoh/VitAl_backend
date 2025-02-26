@@ -147,4 +147,46 @@ public class MemberService {
                 .orElse(null);
     }
 
+    @Transactional
+    public void changePassword(String memberId, String currentPassword, String newPassword, String confirmPassword) {
+        // 1. 회원 조회
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+
+        // 2. 현재 비밀번호 확인
+        if (!passwordEncoder.matches(currentPassword, member.getMemberPassword())) {
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 3. 새 비밀번호 유효성 검사
+        validateNewPassword(currentPassword, newPassword, confirmPassword);
+
+        // 4. 비밀번호 업데이트
+        member.setMemberPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
+
+    private void validateNewPassword(String currentPassword, String newPassword, String confirmPassword) {
+        // 새 비밀번호 확인
+        if (!newPassword.equals(confirmPassword)) {
+            throw new RuntimeException("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 현재 비밀번호와 새 비밀번호가 같은지 확인
+        if (currentPassword.equals(newPassword)) {
+            throw new RuntimeException("새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+        }
+
+        // 비밀번호 복잡성 검증
+        if (!isPasswordValid(newPassword)) {
+            throw new RuntimeException("비밀번호는 최소 8자 이상이며, 영문자, 숫자, 특수문자를 포함해야 합니다.");
+        }
+    }
+
+    private boolean isPasswordValid(String password) {
+        // 비밀번호는 최소 8자 이상, 영문자, 숫자, 특수문자 포함
+        String pattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
+        return password.matches(pattern);
+    }
+
 }

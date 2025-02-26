@@ -56,6 +56,9 @@ public class Member extends BaseEntity{ //table 역할
     @Column
     private double memberBmi;   // bmi
 
+    @Column
+    private String profileImageUrl;
+
     @Builder.Default
     private boolean activated = true;;
 
@@ -77,6 +80,7 @@ public class Member extends BaseEntity{ //table 역할
                 .memberGender(memberDTO.getMemberGender())
                 .memberName(memberDTO.getMemberName())
                 .memberEmail(memberDTO.getMemberEmail())
+                .profileImageUrl(memberDTO.getProfileImageUrl())
                 .activated(true)
                 .build();
     }

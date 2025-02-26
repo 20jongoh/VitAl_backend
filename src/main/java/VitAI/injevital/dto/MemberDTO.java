@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import VitAI.injevital.entity.Member;
-import org.checkerframework.checker.units.qual.N;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @NoArgsConstructor
@@ -62,8 +61,8 @@ public class MemberDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double memberBmi;
 
-
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String profileImageUrl;
 
     public static MemberDTO toMemberDTO(Member memberEntity) {
 
@@ -75,6 +74,7 @@ public class MemberDTO {
         memberDTO.setMemberId(memberEntity.getMemberId());
         memberDTO.setMemberHeight(memberEntity.getMemberHeight());
         memberDTO.setMemberWeight(memberEntity.getMemberWeight());
+        memberDTO.setProfileImageUrl(memberEntity.getProfileImageUrl());
         return memberDTO;
     }
 
